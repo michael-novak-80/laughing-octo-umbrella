@@ -140,6 +140,15 @@
       outline: none;
     }
 
+    #hotel-booking-widget .hb-submit-block {
+      margin: 0;
+      padding: 0;
+      align-self: end;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+
     #hotel-booking-widget .hb-submit-button {
       min-width: 210px !important;
       height: 44px !important;
@@ -185,7 +194,7 @@
 
     #hotel-booking-widget .hb-children-group {
       position: relative;
-      z-index: 10;
+      z-index: 20;
     }
 
     #hotel-booking-widget .hb-child-panel {
@@ -194,19 +203,20 @@
       top: calc(100% + 8px);
       right: 0;
       z-index: 9999;
-      width: 430px;
-      padding: 8px 10px;
+      width: 460px;
+      padding: 9px 10px;
       background: #FEFAF1;
       border: 1.5px solid #000000;
       color: #000000;
     }
 
     #hotel-booking-widget .hb-child-panel-title {
-      margin: 0 0 6px 0;
+      margin: 0 0 7px 0;
       padding: 0;
       font-size: 0.85em;
       line-height: 1.1;
       font-weight: 400;
+      white-space: nowrap;
     }
 
     #hotel-booking-widget .hb-child-inputs {
@@ -406,7 +416,7 @@
         </div>
 
         <div class="hb-child-panel" id="hb-child-panel">
-          <div class="hb-child-panel-title">Zadajte vek detí</div>
+          <div class="hb-child-panel-title">Vek detí</div>
 
           <div class="hb-child-inputs">
             <input
