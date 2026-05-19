@@ -227,22 +227,21 @@
 
     #hotel-booking-widget .hb-child-panel {
       display: none;
-      position: absolute;
-      top: 88px;
-      right: 236px;
-      z-index: 9999;
-      width: 520px;
-      padding: 12px;
-      background: #FEFAF1;
-      border: 1.5px solid #000000;
+      grid-column: 1 / -1;
+      margin-top: 16px;
+      padding: 0;
+      background: transparent;
+      border: none;
       color: #000000;
     }
 
     #hotel-booking-widget .hb-child-panel-inner {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px 14px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
       width: 100%;
+      max-width: 1000px;
+      margin-left: auto;
     }
 
     #hotel-booking-widget .hb-select-group {
@@ -254,20 +253,21 @@
     }
 
     #hotel-booking-widget .hb-child-panel .hb-title {
-      margin: 0 0 4px 0 !important;
-      font-size: 0.85em;
-      line-height: 1.1;
+      margin: 0 0 6px 0 !important;
+      font-size: 0.95em;
+      line-height: 1.15;
     }
 
     #hotel-booking-widget .hb-select {
       width: 100%;
-      height: 30px;
+      height: 34px;
       padding: 0 8px !important;
-      border: 1.2px solid #000000;
+      border: none;
+      border-bottom: 1.5px solid #000000;
       border-radius: 0 !important;
-      background: #FEFAF1;
+      background: transparent;
       color: #000000;
-      font-size: 0.9em;
+      font-size: 0.95em;
       font-weight: 400;
       appearance: auto;
       box-sizing: border-box;
@@ -302,10 +302,10 @@
         width: 100% !important;
       }
 
-      #hotel-booking-widget .hb-child-panel {
-        position: static;
-        width: 100%;
-        margin-top: 14px;
+      #hotel-booking-widget .hb-child-panel-inner {
+        max-width: none;
+        margin-left: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
@@ -838,14 +838,6 @@
 
         els.bookButton.addEventListener("click", function () {
           sendForm();
-        });
-
-        document.addEventListener("click", function (event) {
-          const clickedInsideWidget = widget.contains(event.target);
-
-          if (!clickedInsideWidget && numberOfChildren > 0) {
-            els.childSelects.style.display = "none";
-          }
         });
       }
 
