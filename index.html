@@ -33,6 +33,7 @@
     }
 
     #hotel-booking-widget input,
+    #hotel-booking-widget select,
     #hotel-booking-widget button {
       font-family: "Baskerville Display PT", Baskerville, "Libre Baskerville", Georgia, serif !important;
     }
@@ -234,7 +235,7 @@
     #hotel-booking-widget .hb-child-age {
       display: none;
       width: 100%;
-      height: 30px;
+      height: 34px;
       padding: 0 8px !important;
       border: none !important;
       border-bottom: 1.5px solid #000000 !important;
@@ -242,22 +243,18 @@
       background: transparent !important;
       color: #000000 !important;
       font-size: 0.9em !important;
-      line-height: 30px !important;
+      line-height: 34px !important;
       font-weight: 400 !important;
       text-align: center;
       outline: none !important;
       box-shadow: none !important;
-      appearance: textfield;
-      -moz-appearance: textfield;
+      cursor: pointer;
+      appearance: auto;
+      -webkit-appearance: auto;
     }
 
     #hotel-booking-widget .hb-child-age.is-visible {
       display: block;
-    }
-
-    #hotel-booking-widget .hb-child-age::placeholder {
-      color: #000000;
-      opacity: 0.7;
     }
 
     #hotel-booking-widget input::-webkit-outer-spin-button,
@@ -430,49 +427,41 @@
           <div class="hb-child-panel-title">Vek detí</div>
 
           <div class="hb-child-inputs">
-            <input
+            <select
               class="hb-child-age"
               id="hb-child-age-1"
-              type="number"
-              inputmode="numeric"
-              min="1"
-              max="12"
-              placeholder="Dieťa 1"
               data-child-age="1"
-            />
+              aria-label="Vek dieťaťa 1"
+            >
+              <option value="">Dieťa 1</option>
+            </select>
 
-            <input
+            <select
               class="hb-child-age"
               id="hb-child-age-2"
-              type="number"
-              inputmode="numeric"
-              min="1"
-              max="12"
-              placeholder="Dieťa 2"
               data-child-age="2"
-            />
+              aria-label="Vek dieťaťa 2"
+            >
+              <option value="">Dieťa 2</option>
+            </select>
 
-            <input
+            <select
               class="hb-child-age"
               id="hb-child-age-3"
-              type="number"
-              inputmode="numeric"
-              min="1"
-              max="12"
-              placeholder="Dieťa 3"
               data-child-age="3"
-            />
+              aria-label="Vek dieťaťa 3"
+            >
+              <option value="">Dieťa 3</option>
+            </select>
 
-            <input
+            <select
               class="hb-child-age"
               id="hb-child-age-4"
-              type="number"
-              inputmode="numeric"
-              min="1"
-              max="12"
-              placeholder="Dieťa 4"
               data-child-age="4"
-            />
+              aria-label="Vek dieťaťa 4"
+            >
+              <option value="">Dieťa 4</option>
+            </select>
           </div>
         </div>
       </div>
@@ -506,11 +495,13 @@
       const minAdults = 1;
       const maxChildren = 4;
       const maxAdults = 6;
+      const minChildAge = 1;
+      const maxChildAge = 12;
 
       const buttonDefaultText = "Overiť dostupnosť";
       const buttonLoadingText = "Otváram...";
 
-      const msgNoAgeOfChildren = "Vyplňte vek detí.";
+      const msgNoAgeOfChildren = "Vyberte vek detí.";
       const msgInvalidChildAge = "Vek dieťaťa musí byť od 1 do 12 rokov.";
       const msgMissingDates = "Vyberte dátum príchodu a dátum odchodu.";
       const msgBookingError =
@@ -532,12 +523,28 @@
         adults: widget.querySelector("#hb-adults"),
         children: widget.querySelector("#hb-children"),
         childrenGroup: widget.querySelector("#hb-children-group"),
-        childPanel: widget.querySelector("#hb-child-panel"),
         error: widget.querySelector("#hb-error-msg"),
         bookButton: widget.querySelector("#hb-book"),
         counterButtons: widget.querySelectorAll("[data-counter][data-direction]"),
         childAgeInputs: widget.querySelectorAll("[data-child-age]"),
       };
+
+      function childAgeLabel(age) {
+        if (age === 1) return "1 rok";
+        if (age >= 2 && age <= 4) return age + " roky";
+        return age + " rokov";
+      }
+
+      function fillChildAgeOptions() {
+        els.childAgeInputs.forEach(function (select) {
+          for (let age = minChildAge; age <= maxChildAge; age++) {
+            const option = document.createElement("option");
+            option.value = String(age);
+            option.textContent = childAgeLabel(age);
+            select.appendChild(option);
+          }
+        });
+      }
 
       function setError(message) {
         els.error.textContent = message || "";
@@ -604,18 +611,17 @@
         }
       }
 
-      function normalizeChildAge(input) {
-        let value = parseInt(input.value, 10);
+      function normalizeChildAge(select) {
+        const value = parseInt(select.value, 10);
 
         if (Number.isNaN(value)) {
-          input.value = "";
           return 0;
         }
 
-        if (value < 1) value = 1;
-        if (value > 12) value = 12;
+        if (value < minChildAge || value > maxChildAge) {
+          return 0;
+        }
 
-        input.value = String(value);
         return value;
       }
 
@@ -624,16 +630,16 @@
 
         els.childrenGroup.classList.toggle("is-open", hasChildren);
 
-        els.childAgeInputs.forEach(function (input, index) {
+        els.childAgeInputs.forEach(function (select, index) {
           const childNumber = index + 1;
           const childKey = "child" + childNumber;
           const shouldShow = index < numberOfChildren;
 
-          input.classList.toggle("is-visible", shouldShow);
-          input.disabled = !shouldShow;
+          select.classList.toggle("is-visible", shouldShow);
+          select.disabled = !shouldShow;
 
           if (!shouldShow) {
-            input.value = "";
+            select.value = "";
             ageOfChildren[childKey] = 0;
           }
         });
@@ -667,12 +673,12 @@
       }
 
       function readChildAges() {
-        els.childAgeInputs.forEach(function (input) {
-          const childNumber = input.getAttribute("data-child-age");
+        els.childAgeInputs.forEach(function (select) {
+          const childNumber = select.getAttribute("data-child-age");
           const childKey = "child" + childNumber;
 
           if (Number(childNumber) <= numberOfChildren) {
-            ageOfChildren[childKey] = normalizeChildAge(input);
+            ageOfChildren[childKey] = normalizeChildAge(select);
           } else {
             ageOfChildren[childKey] = 0;
           }
@@ -686,12 +692,13 @@
 
         for (let i = 1; i <= numberOfChildren; i++) {
           const key = "child" + i;
+          const value = Number(ageOfChildren[key]);
 
-          if (!ageOfChildren[key] || Number(ageOfChildren[key]) === 0) {
+          if (!value) {
             return true;
           }
 
-          if (Number(ageOfChildren[key]) < 1 || Number(ageOfChildren[key]) > 12) {
+          if (value < minChildAge || value > maxChildAge) {
             setError(msgInvalidChildAge);
             return true;
           }
@@ -797,13 +804,9 @@
           });
         });
 
-        els.childAgeInputs.forEach(function (input) {
-          input.addEventListener("input", function () {
+        els.childAgeInputs.forEach(function (select) {
+          select.addEventListener("change", function () {
             removeError();
-            readChildAges();
-          });
-
-          input.addEventListener("blur", function () {
             readChildAges();
           });
         });
@@ -825,6 +828,7 @@
       }
 
       function init() {
+        fillChildAgeOptions();
         setDefaultDates();
 
         els.adults.min = minAdults;
