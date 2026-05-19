@@ -11,7 +11,8 @@
       padding: 0;
       background: transparent;
       color: #000000;
-      overflow: hidden;
+      overflow: visible;
+      min-height: 170px;
       font-family: "Baskerville Display PT", Baskerville, "Libre Baskerville", Georgia, serif;
     }
 
@@ -210,6 +211,10 @@
       color: #000000;
     }
 
+    #hotel-booking-widget .hb-children-group.is-open .hb-child-panel {
+      display: block;
+    }
+
     #hotel-booking-widget .hb-child-panel-title {
       margin: 0 0 7px 0;
       padding: 0;
@@ -246,6 +251,10 @@
       -moz-appearance: textfield;
     }
 
+    #hotel-booking-widget .hb-child-age.is-visible {
+      display: block;
+    }
+
     #hotel-booking-widget .hb-child-age::placeholder {
       color: #000000;
       opacity: 0.7;
@@ -265,6 +274,7 @@
       html,
       body {
         overflow: auto;
+        min-height: 420px;
       }
 
       #hotel-booking-widget .hb-form {
@@ -291,6 +301,7 @@
       html,
       body {
         overflow: auto;
+        min-height: 520px;
       }
 
       #hotel-booking-widget .hb-form {
@@ -378,7 +389,7 @@
         </div>
       </div>
 
-      <div class="hb-group hb-children-group">
+      <div class="hb-group hb-children-group" id="hb-children-group">
         <h4 class="hb-title">
           <label for="hb-children">Deti</label>
         </h4>
@@ -520,6 +531,7 @@
         dateTo: widget.querySelector("#hb-date-to"),
         adults: widget.querySelector("#hb-adults"),
         children: widget.querySelector("#hb-children"),
+        childrenGroup: widget.querySelector("#hb-children-group"),
         childPanel: widget.querySelector("#hb-child-panel"),
         error: widget.querySelector("#hb-error-msg"),
         bookButton: widget.querySelector("#hb-book"),
@@ -529,10 +541,25 @@
 
       function setError(message) {
         els.error.textContent = message || "";
+        sendWidgetHeight();
       }
 
       function removeError() {
         els.error.textContent = "";
+        sendWidgetHeight();
+      }
+
+      function sendWidgetHeight() {
+        window.setTimeout(function () {
+          const height = Math.ceil(document.documentElement.scrollHeight);
+          window.parent.postMessage(
+            {
+              type: "hotelBookingWidgetHeight",
+              height: height,
+            },
+            "*"
+          );
+        }, 0);
       }
 
       function addDays(baseDate, days) {
@@ -593,24 +620,25 @@
       }
 
       function updateChildAgeFields() {
-        if (numberOfChildren > 0) {
-          els.childPanel.style.display = "block";
-        } else {
-          els.childPanel.style.display = "none";
-        }
+        const hasChildren = numberOfChildren > 0;
+
+        els.childrenGroup.classList.toggle("is-open", hasChildren);
 
         els.childAgeInputs.forEach(function (input, index) {
           const childNumber = index + 1;
           const childKey = "child" + childNumber;
+          const shouldShow = index < numberOfChildren;
 
-          if (index < numberOfChildren) {
-            input.style.display = "block";
-          } else {
-            input.style.display = "none";
+          input.classList.toggle("is-visible", shouldShow);
+          input.disabled = !shouldShow;
+
+          if (!shouldShow) {
             input.value = "";
             ageOfChildren[childKey] = 0;
           }
         });
+
+        sendWidgetHeight();
       }
 
       function setCounterValue(type, value) {
@@ -755,6 +783,7 @@
           })
           .finally(function () {
             setSubmitting(false);
+            sendWidgetHeight();
           });
       }
 
@@ -791,6 +820,8 @@
         els.bookButton.addEventListener("click", function () {
           sendForm();
         });
+
+        window.addEventListener("resize", sendWidgetHeight);
       }
 
       function init() {
@@ -808,6 +839,7 @@
 
         updateChildAgeFields();
         bindEvents();
+        sendWidgetHeight();
       }
 
       init();
