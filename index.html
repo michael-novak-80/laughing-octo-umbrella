@@ -53,15 +53,11 @@
       background: transparent;
       border: none;
       box-shadow: none;
+      overflow: visible;
     }
 
-    #hotel-booking-widget .hb-block,
-    #hotel-booking-widget .hb-block-counters {
-      display: contents;
-    }
-
-    #hotel-booking-widget .hb-group,
-    #hotel-booking-widget .hb-group-right {
+    #hotel-booking-widget .hb-group {
+      position: relative;
       margin: 0;
       padding: 0;
       background: transparent;
@@ -115,14 +111,6 @@
     #hotel-booking-widget .hb-date-field::-webkit-calendar-picker-indicator {
       cursor: pointer;
       opacity: 0.75;
-    }
-
-    #hotel-booking-widget .hb-counter {
-      margin: 0;
-      padding: 0;
-      background: transparent;
-      border: none;
-      box-shadow: none;
     }
 
     #hotel-booking-widget .hb-counter-inner {
@@ -225,23 +213,29 @@
       font-size: 0.95em;
     }
 
+    #hotel-booking-widget .hb-children-group {
+      position: relative;
+      z-index: 10;
+    }
+
     #hotel-booking-widget .hb-child-panel {
       display: none;
-      grid-column: 1 / -1;
-      margin-top: 16px;
-      padding: 0;
-      background: transparent;
-      border: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      z-index: 999;
+      width: 420px;
+      padding: 12px;
+      background: #FEFAF1;
+      border: 1.5px solid #000000;
       color: #000000;
     }
 
     #hotel-booking-widget .hb-child-panel-inner {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 14px;
       width: 100%;
-      max-width: 1000px;
-      margin-left: auto;
     }
 
     #hotel-booking-widget .hb-select-group {
@@ -253,21 +247,20 @@
     }
 
     #hotel-booking-widget .hb-child-panel .hb-title {
-      margin: 0 0 6px 0 !important;
-      font-size: 0.95em;
-      line-height: 1.15;
+      margin: 0 0 4px 0 !important;
+      font-size: 0.9em;
+      line-height: 1.1;
     }
 
     #hotel-booking-widget .hb-select {
       width: 100%;
-      height: 34px;
+      height: 32px;
       padding: 0 8px !important;
-      border: none;
-      border-bottom: 1.5px solid #000000;
+      border: 1.2px solid #000000;
       border-radius: 0 !important;
-      background: transparent;
+      background: #FEFAF1;
       color: #000000;
-      font-size: 0.95em;
+      font-size: 0.9em;
       font-weight: 400;
       appearance: auto;
       box-sizing: border-box;
@@ -302,10 +295,10 @@
         width: 100% !important;
       }
 
-      #hotel-booking-widget .hb-child-panel-inner {
-        max-width: none;
-        margin-left: 0;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      #hotel-booking-widget .hb-child-panel {
+        position: static;
+        width: 100%;
+        margin-top: 14px;
       }
     }
 
@@ -334,113 +327,197 @@
 <body>
   <div id="hotel-booking-widget">
     <form class="hb-form" id="hotel-booking-form" novalidate>
-      <div class="hb-block">
-        <div class="hb-group">
-          <h4 class="hb-title">
-            <label for="hb-date-from">Dátum príchodu</label>
-          </h4>
+      <div class="hb-group">
+        <h4 class="hb-title">
+          <label for="hb-date-from">Dátum príchodu</label>
+        </h4>
+
+        <input
+          class="hb-date-field"
+          type="date"
+          autocomplete="off"
+          id="hb-date-from"
+          name="dateFrom"
+        />
+      </div>
+
+      <div class="hb-group">
+        <h4 class="hb-title">
+          <label for="hb-date-to">Dátum odchodu</label>
+        </h4>
+
+        <input
+          class="hb-date-field"
+          type="date"
+          autocomplete="off"
+          id="hb-date-to"
+          name="dateTo"
+        />
+      </div>
+
+      <div class="hb-group">
+        <h4 class="hb-title">
+          <label for="hb-adults">Dospelí</label>
+        </h4>
+
+        <div class="hb-counter-inner">
+          <button
+            class="hb-count-button"
+            type="button"
+            data-counter="adults"
+            data-direction="remove"
+            aria-label="Znížiť počet dospelých"
+          >
+            -
+          </button>
 
           <input
-            class="hb-date-field"
-            type="date"
+            class="hb-count-field"
+            id="hb-adults"
             autocomplete="off"
-            id="hb-date-from"
-            name="dateFrom"
+            type="number"
+            name="adults"
+            readonly
+            aria-label="Počet dospelých"
           />
-        </div>
 
-        <div class="hb-group-right">
-          <h4 class="hb-title">
-            <label for="hb-date-to">Dátum odchodu</label>
-          </h4>
-
-          <input
-            class="hb-date-field"
-            type="date"
-            autocomplete="off"
-            id="hb-date-to"
-            name="dateTo"
-          />
+          <button
+            class="hb-count-button"
+            type="button"
+            data-counter="adults"
+            data-direction="add"
+            aria-label="Zvýšiť počet dospelých"
+          >
+            +
+          </button>
         </div>
       </div>
 
-      <div class="hb-block hb-block-counters">
-        <div class="hb-group">
-          <div class="hb-counter">
-            <h4 class="hb-title">
-              <label for="hb-adults">Dospelí</label>
-            </h4>
+      <div class="hb-group hb-children-group">
+        <h4 class="hb-title">
+          <label for="hb-children">Deti</label>
+        </h4>
 
-            <div class="hb-counter-inner">
-              <button
-                class="hb-count-button"
-                type="button"
-                data-counter="adults"
-                data-direction="remove"
-                aria-label="Znížiť počet dospelých"
-              >
-                -
-              </button>
+        <div class="hb-counter-inner">
+          <button
+            class="hb-count-button"
+            type="button"
+            data-counter="children"
+            data-direction="remove"
+            aria-label="Znížiť počet detí"
+          >
+            -
+          </button>
 
-              <input
-                class="hb-count-field"
-                id="hb-adults"
-                autocomplete="off"
-                type="number"
-                name="adults"
-                readonly
-                aria-label="Počet dospelých"
-              />
+          <input
+            class="hb-count-field"
+            id="hb-children"
+            autocomplete="off"
+            type="number"
+            name="children"
+            readonly
+            aria-label="Počet detí"
+          />
 
-              <button
-                class="hb-count-button"
-                type="button"
-                data-counter="adults"
-                data-direction="add"
-                aria-label="Zvýšiť počet dospelých"
-              >
-                +
-              </button>
-            </div>
-          </div>
+          <button
+            class="hb-count-button"
+            type="button"
+            data-counter="children"
+            data-direction="add"
+            aria-label="Zvýšiť počet detí"
+          >
+            +
+          </button>
         </div>
 
-        <div class="hb-group-right hb-children-wrap">
-          <div class="hb-counter" id="hb-children-counter">
-            <h4 class="hb-title">
-              <label for="hb-children">Deti</label>
-            </h4>
+        <div class="hb-child-panel" id="hb-child-selects">
+          <div class="hb-child-panel-inner">
+            <div class="hb-select-group" id="hb-group-child1">
+              <h4 class="hb-title">
+                <label for="hb-child1">Dieťa 1</label>
+              </h4>
 
-            <div class="hb-counter-inner">
-              <button
-                class="hb-count-button"
-                type="button"
-                data-counter="children"
-                data-direction="remove"
-                aria-label="Znížiť počet detí"
-              >
-                -
-              </button>
+              <select class="hb-select" name="child1" id="hb-child1" data-child="1">
+                <option value="0">Vek dieťaťa</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+            </div>
 
-              <input
-                class="hb-count-field"
-                id="hb-children"
-                autocomplete="off"
-                type="number"
-                name="children"
-                readonly
-                aria-label="Počet detí"
-              />
+            <div class="hb-select-group" id="hb-group-child2">
+              <h4 class="hb-title">
+                <label for="hb-child2">Dieťa 2</label>
+              </h4>
 
-              <button
-                class="hb-count-button"
-                type="button"
-                data-counter="children"
-                data-direction="add"
-                aria-label="Zvýšiť počet detí"
-              >
-                +
-              </button>
+              <select class="hb-select" name="child2" id="hb-child2" data-child="2">
+                <option value="0">Vek dieťaťa</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+            </div>
+
+            <div class="hb-select-group" id="hb-group-child3">
+              <h4 class="hb-title">
+                <label for="hb-child3">Dieťa 3</label>
+              </h4>
+
+              <select class="hb-select" name="child3" id="hb-child3" data-child="3">
+                <option value="0">Vek dieťaťa</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+            </div>
+
+            <div class="hb-select-group" id="hb-group-child4">
+              <h4 class="hb-title">
+                <label for="hb-child4">Dieťa 4</label>
+              </h4>
+
+              <select class="hb-select" name="child4" id="hb-child4" data-child="4">
+                <option value="0">Vek dieťaťa</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
             </div>
           </div>
         </div>
@@ -453,98 +530,6 @@
           class="hb-submit-button"
           value="Overiť dostupnosť"
         />
-      </div>
-
-      <div class="hb-child-panel" id="hb-child-selects">
-        <div class="hb-child-panel-inner">
-          <div class="hb-select-group" id="hb-group-child1">
-            <h4 class="hb-title">
-              <label for="hb-child1">Dieťa 1</label>
-            </h4>
-
-            <select class="hb-select" name="child1" id="hb-child1" data-child="1">
-              <option value="0">Vek dieťaťa</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-            </select>
-          </div>
-
-          <div class="hb-select-group" id="hb-group-child2">
-            <h4 class="hb-title">
-              <label for="hb-child2">Dieťa 2</label>
-            </h4>
-
-            <select class="hb-select" name="child2" id="hb-child2" data-child="2">
-              <option value="0">Vek dieťaťa</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-            </select>
-          </div>
-
-          <div class="hb-select-group" id="hb-group-child3">
-            <h4 class="hb-title">
-              <label for="hb-child3">Dieťa 3</label>
-            </h4>
-
-            <select class="hb-select" name="child3" id="hb-child3" data-child="3">
-              <option value="0">Vek dieťaťa</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-            </select>
-          </div>
-
-          <div class="hb-select-group" id="hb-group-child4">
-            <h4 class="hb-title">
-              <label for="hb-child4">Dieťa 4</label>
-            </h4>
-
-            <select class="hb-select" name="child4" id="hb-child4" data-child="4">
-              <option value="0">Vek dieťaťa</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-            </select>
-          </div>
-        </div>
       </div>
     </form>
 
@@ -594,7 +579,6 @@
       ];
 
       const els = {
-        form: widget.querySelector("#hotel-booking-form"),
         dateFrom: widget.querySelector("#hb-date-from"),
         dateTo: widget.querySelector("#hb-date-to"),
         adults: widget.querySelector("#hb-adults"),
@@ -838,6 +822,12 @@
 
         els.bookButton.addEventListener("click", function () {
           sendForm();
+        });
+
+        document.addEventListener("click", function (event) {
+          if (!widget.contains(event.target)) {
+            els.childSelects.style.display = "none";
+          }
         });
       }
 
