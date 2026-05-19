@@ -4,21 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <link
-    rel="stylesheet"
-    type="text/css"
-    href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css"
-  />
-
   <style>
     html,
     body {
       margin: 0;
       padding: 0;
       background: transparent;
-      overflow: visible;
-      font-family: "Baskerville Display PT", Baskerville, "Libre Baskerville", Georgia, serif;
       color: #000000;
+      overflow: hidden;
+      font-family: "Baskerville Display PT", Baskerville, "Libre Baskerville", Georgia, serif;
     }
 
     #hotel-booking-widget,
@@ -35,7 +29,7 @@
       color: #000000;
       border: none;
       box-shadow: none;
-      overflow: visible;
+      font-family: "Baskerville Display PT", Baskerville, "Libre Baskerville", Georgia, serif;
     }
 
     #hotel-booking-widget input,
@@ -55,7 +49,6 @@
       background: transparent;
       border: none;
       box-shadow: none;
-      overflow: visible;
     }
 
     #hotel-booking-widget .hb-block,
@@ -70,7 +63,6 @@
       background: transparent;
       border: none;
       box-shadow: none;
-      overflow: visible;
     }
 
     #hotel-booking-widget .hb-title {
@@ -103,6 +95,8 @@
       cursor: pointer;
       box-shadow: none !important;
       outline: none !important;
+      appearance: auto;
+      -webkit-appearance: auto;
     }
 
     #hotel-booking-widget .hb-date-field:hover {
@@ -112,6 +106,11 @@
     #hotel-booking-widget .hb-date-field:focus-visible {
       outline: none !important;
       border-bottom-width: 2px !important;
+    }
+
+    #hotel-booking-widget .hb-date-field::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.75;
     }
 
     #hotel-booking-widget .hb-counter {
@@ -222,46 +221,40 @@
       font-size: 1em;
     }
 
-    #hotel-booking-widget .hb-children-wrap {
-      position: relative;
-      overflow: visible;
+    #hotel-booking-widget .hb-child-panel {
+      display: none;
+      grid-column: 1 / -1;
+      margin-top: 18px;
+      padding: 0;
+      background: transparent;
+      border: none;
     }
 
-    #hotel-booking-widget .hb-selects {
-      display: none;
-      position: absolute;
-      top: calc(100% + 10px);
-      left: 0;
-      z-index: 999999;
-      width: 300px;
-      padding: 16px;
-      background: #FEFAF1;
-      border: 1px solid #000000;
-      color: #000000;
-      box-shadow: none;
-      overflow: visible;
-      box-sizing: border-box;
+    #hotel-booking-widget .hb-child-panel-inner {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      width: 100%;
+      max-width: 780px;
+      margin-left: auto;
     }
 
     #hotel-booking-widget .hb-select-group {
       display: none;
       width: 100%;
       padding: 0;
-      margin-bottom: 12px;
+      margin: 0;
       background: transparent;
-    }
-
-    #hotel-booking-widget .hb-select-group:last-child {
-      margin-bottom: 0;
     }
 
     #hotel-booking-widget .hb-select {
       width: 100%;
-      height: 44px;
+      height: 38px;
       padding: 0 10px !important;
-      border: 1px solid #000000;
+      border: none;
+      border-bottom: 1.5px solid #000000;
       border-radius: 0 !important;
-      background: #FEFAF1;
+      background: transparent;
       color: #000000;
       font-size: 1em;
       font-weight: 400;
@@ -279,44 +272,6 @@
       -moz-appearance: textfield;
     }
 
-    .hotel-booking-pika {
-      font-family: "Baskerville Display PT", Baskerville, "Libre Baskerville", Georgia, serif !important;
-      z-index: 999999 !important;
-      border: 1px solid #000000 !important;
-      background: #FEFAF1 !important;
-      color: #000000 !important;
-      box-shadow: none !important;
-    }
-
-    .hotel-booking-pika .pika-lendar,
-    .hotel-booking-pika .pika-label,
-    .hotel-booking-pika .pika-table th,
-    .hotel-booking-pika .pika-button {
-      background: #FEFAF1 !important;
-      color: #000000 !important;
-      font-family: "Baskerville Display PT", Baskerville, "Libre Baskerville", Georgia, serif !important;
-      font-weight: 400 !important;
-    }
-
-    .hotel-booking-pika .is-today .pika-button {
-      color: #000000 !important;
-      font-weight: 700 !important;
-    }
-
-    .hotel-booking-pika .is-selected .pika-button,
-    .hotel-booking-pika .has-event .pika-button {
-      color: #FEFAF1 !important;
-      font-weight: 700 !important;
-      background: #000000 !important;
-      box-shadow: none !important;
-    }
-
-    .hotel-booking-pika .pika-button:hover,
-    .hotel-booking-pika .pika-row.pick-whole-week:hover .pika-button {
-      color: #FEFAF1 !important;
-      background: #000000 !important;
-    }
-
     @media only screen and (max-width: 1100px) {
       #hotel-booking-widget .hb-form {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -330,9 +285,20 @@
       #hotel-booking-widget .hb-submit-button {
         width: 100% !important;
       }
+
+      #hotel-booking-widget .hb-child-panel-inner {
+        max-width: none;
+        margin-left: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     @media only screen and (max-width: 640px) {
+      html,
+      body {
+        overflow: auto;
+      }
+
       #hotel-booking-widget .hb-form {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -342,10 +308,8 @@
         width: 100% !important;
       }
 
-      #hotel-booking-widget .hb-selects {
-        position: static;
-        width: 100%;
-        margin-top: 12px;
+      #hotel-booking-widget .hb-child-panel-inner {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -362,11 +326,10 @@
 
           <input
             class="hb-date-field"
-            type="text"
+            type="date"
             autocomplete="off"
             id="hb-date-from"
             name="dateFrom"
-            readonly
           />
         </div>
 
@@ -377,11 +340,10 @@
 
           <input
             class="hb-date-field"
-            type="text"
+            type="date"
             autocomplete="off"
             id="hb-date-to"
             name="dateTo"
-            readonly
           />
         </div>
       </div>
@@ -394,7 +356,15 @@
             </h4>
 
             <div class="hb-counter-inner">
-              <button class="hb-count-button" type="button" data-counter="adults" data-direction="remove">-</button>
+              <button
+                class="hb-count-button"
+                type="button"
+                data-counter="adults"
+                data-direction="remove"
+                aria-label="Znížiť počet dospelých"
+              >
+                -
+              </button>
 
               <input
                 class="hb-count-field"
@@ -403,9 +373,18 @@
                 type="number"
                 name="adults"
                 readonly
+                aria-label="Počet dospelých"
               />
 
-              <button class="hb-count-button" type="button" data-counter="adults" data-direction="add">+</button>
+              <button
+                class="hb-count-button"
+                type="button"
+                data-counter="adults"
+                data-direction="add"
+                aria-label="Zvýšiť počet dospelých"
+              >
+                +
+              </button>
             </div>
           </div>
         </div>
@@ -417,7 +396,15 @@
             </h4>
 
             <div class="hb-counter-inner">
-              <button class="hb-count-button" type="button" data-counter="children" data-direction="remove">-</button>
+              <button
+                class="hb-count-button"
+                type="button"
+                data-counter="children"
+                data-direction="remove"
+                aria-label="Znížiť počet detí"
+              >
+                -
+              </button>
 
               <input
                 class="hb-count-field"
@@ -426,61 +413,24 @@
                 type="number"
                 name="children"
                 readonly
+                aria-label="Počet detí"
               />
 
-              <button class="hb-count-button" type="button" data-counter="children" data-direction="add">+</button>
-            </div>
-          </div>
-
-          <div class="hb-selects" id="hb-child-selects">
-            <div class="hb-select-group" id="hb-group-child1">
-              <h4 class="hb-title"><label for="hb-child1">Dieťa 1</label></h4>
-              <select class="hb-select" name="child1" id="hb-child1" data-child="1">
-                <option value="0">Vek dieťaťa</option>
-                <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-                <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-                <option value="7">7</option><option value="8">8</option><option value="9">9</option>
-                <option value="10">10</option><option value="11">11</option><option value="12">12</option>
-              </select>
-            </div>
-
-            <div class="hb-select-group" id="hb-group-child2">
-              <h4 class="hb-title"><label for="hb-child2">Dieťa 2</label></h4>
-              <select class="hb-select" name="child2" id="hb-child2" data-child="2">
-                <option value="0">Vek dieťaťa</option>
-                <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-                <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-                <option value="7">7</option><option value="8">8</option><option value="9">9</option>
-                <option value="10">10</option><option value="11">11</option><option value="12">12</option>
-              </select>
-            </div>
-
-            <div class="hb-select-group" id="hb-group-child3">
-              <h4 class="hb-title"><label for="hb-child3">Dieťa 3</label></h4>
-              <select class="hb-select" name="child3" id="hb-child3" data-child="3">
-                <option value="0">Vek dieťaťa</option>
-                <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-                <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-                <option value="7">7</option><option value="8">8</option><option value="9">9</option>
-                <option value="10">10</option><option value="11">11</option><option value="12">12</option>
-              </select>
-            </div>
-
-            <div class="hb-select-group" id="hb-group-child4">
-              <h4 class="hb-title"><label for="hb-child4">Dieťa 4</label></h4>
-              <select class="hb-select" name="child4" id="hb-child4" data-child="4">
-                <option value="0">Vek dieťaťa</option>
-                <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-                <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-                <option value="7">7</option><option value="8">8</option><option value="9">9</option>
-                <option value="10">10</option><option value="11">11</option><option value="12">12</option>
-              </select>
+              <button
+                class="hb-count-button"
+                type="button"
+                data-counter="children"
+                data-direction="add"
+                aria-label="Zvýšiť počet detí"
+              >
+                +
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="hb-block hb-submit-block">
+      <div class="hb-submit-block">
         <input
           id="hb-book"
           type="button"
@@ -488,35 +438,106 @@
           value="Overiť dostupnosť"
         />
       </div>
+
+      <div class="hb-child-panel" id="hb-child-selects">
+        <div class="hb-child-panel-inner">
+          <div class="hb-select-group" id="hb-group-child1">
+            <h4 class="hb-title">
+              <label for="hb-child1">Dieťa 1</label>
+            </h4>
+
+            <select class="hb-select" name="child1" id="hb-child1" data-child="1">
+              <option value="0">Vek dieťaťa</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+
+          <div class="hb-select-group" id="hb-group-child2">
+            <h4 class="hb-title">
+              <label for="hb-child2">Dieťa 2</label>
+            </h4>
+
+            <select class="hb-select" name="child2" id="hb-child2" data-child="2">
+              <option value="0">Vek dieťaťa</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+
+          <div class="hb-select-group" id="hb-group-child3">
+            <h4 class="hb-title">
+              <label for="hb-child3">Dieťa 3</label>
+            </h4>
+
+            <select class="hb-select" name="child3" id="hb-child3" data-child="3">
+              <option value="0">Vek dieťaťa</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+
+          <div class="hb-select-group" id="hb-group-child4">
+            <h4 class="hb-title">
+              <label for="hb-child4">Dieťa 4</label>
+            </h4>
+
+            <select class="hb-select" name="child4" id="hb-child4" data-child="4">
+              <option value="0">Vek dieťaťa</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </form>
 
     <div class="hb-warning" id="hb-error-msg" aria-live="polite"></div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
-
   <script>
     (function () {
       "use strict";
-
-      function sendHeight() {
-        const height = Math.max(
-          document.body.scrollHeight,
-          document.documentElement.scrollHeight,
-          120
-        );
-
-        parent.postMessage(
-          {
-            type: "hotelBookingWidgetHeight",
-            height: height + 20
-          },
-          "*"
-        );
-      }
-
-      window.addEventListener("load", sendHeight);
-      window.addEventListener("resize", sendHeight);
 
       const widget = document.getElementById("hotel-booking-widget");
       if (!widget) return;
@@ -539,8 +560,6 @@
       const msgBookingError =
         "Rezerváciu sa nepodarilo otvoriť. Skúste to prosím znova.";
 
-      let dateFrom = null;
-      let dateTo = null;
       let numberOfAdults = 1;
       let numberOfChildren = 0;
 
@@ -548,14 +567,14 @@
         child1: 0,
         child2: 0,
         child3: 0,
-        child4: 0
+        child4: 0,
       };
 
       const childGroups = [
         "hb-group-child1",
         "hb-group-child2",
         "hb-group-child3",
-        "hb-group-child4"
+        "hb-group-child4",
       ];
 
       const els = {
@@ -568,30 +587,14 @@
         bookButton: widget.querySelector("#hb-book"),
         counterButtons: widget.querySelectorAll("[data-counter][data-direction]"),
         childAgeSelects: widget.querySelectorAll("[data-child]"),
-        childrenCounter: widget.querySelector("#hb-children-counter")
-      };
-
-      const pikadaySK = {
-        previousMonth: "Predchádzajúci Mesiac",
-        nextMonth: "Ďalší Mesiac",
-        months: [
-          "Január", "Február", "Marec", "Apríl", "Máj", "Jún",
-          "Júl", "August", "September", "Október", "November", "December"
-        ],
-        weekdays: [
-          "Nedeľa", "Pondelok", "Utorok", "Streda", "Štvrtok", "Piatok", "Sobota"
-        ],
-        weekdaysShort: ["Ne", "Po", "Ut", "St", "Št", "Pi", "So"]
       };
 
       function setError(message) {
         els.error.textContent = message || "";
-        sendHeight();
       }
 
       function removeError() {
         els.error.textContent = "";
-        sendHeight();
       }
 
       function addDays(baseDate, days) {
@@ -600,95 +603,50 @@
         return date;
       }
 
-      function dateToString(date) {
-        return date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
-      }
-
-      function dateFromString(dateString) {
-        const parts = dateString.split(".");
-        return new Date(
-          parseInt(parts[2], 10),
-          parseInt(parts[1], 10) - 1,
-          parseInt(parts[0], 10)
-        );
-      }
-
-      function formatDate(dateString) {
-        if (!dateString) return "";
-
-        const parts = dateString.split(".");
-        let day = parseInt(parts[0], 10);
-        let month = parseInt(parts[1], 10);
-        const year = parseInt(parts[2], 10);
-
-        if (day < 10) day = "0" + day;
-        if (month < 10) month = "0" + month;
+      function dateToISO(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
 
         return year + "-" + month + "-" + day;
       }
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      function setDefaultDates() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-      const tomorrow = addDays(today, 1);
-      const nextDay = addDays(today, 2);
+        const tomorrow = addDays(today, 1);
+        const nextDay = addDays(today, 2);
 
-      const basePikadayOptions = {
-        firstDay: 1,
-        format: "DD.MM.YYYY",
-        numberOfMonths: 1,
-        i18n: pikadaySK,
-        theme: "hotel-booking-pika",
-        toString: dateToString,
-        parse: dateFromString
-      };
+        els.dateFrom.min = dateToISO(today);
+        els.dateFrom.value = dateToISO(tomorrow);
 
-      const dateFromPicker = new Pikaday(
-        Object.assign({}, basePikadayOptions, {
-          field: els.dateFrom,
-          minDate: today,
-          defaultDate: tomorrow,
-          setDefaultDate: true,
-          onSelect: setDateFrom
-        })
-      );
-
-      const dateToPicker = new Pikaday(
-        Object.assign({}, basePikadayOptions, {
-          field: els.dateTo,
-          minDate: tomorrow,
-          defaultDate: nextDay,
-          setDefaultDate: true,
-          onSelect: setDateTo
-        })
-      );
-
-      function setDateFrom() {
-        removeError();
-
-        dateFrom = els.dateFrom.value;
-
-        const selectedDateFrom = dateFromPicker.getDate();
-        if (!selectedDateFrom) return;
-
-        const minDateTo = addDays(selectedDateFrom, 1);
-        dateToPicker.setMinDate(minDateTo);
-
-        const selectedDateTo = dateToPicker.getDate();
-
-        if (!selectedDateTo || selectedDateFrom >= selectedDateTo) {
-          dateToPicker.setDate(minDateTo);
-        }
-
-        setDateTo();
+        els.dateTo.min = dateToISO(tomorrow);
+        els.dateTo.value = dateToISO(nextDay);
       }
 
-      function setDateTo() {
-        removeError();
-        dateTo = els.dateTo.value;
+      function updateDateLimits() {
+        const fromValue = els.dateFrom.value;
+        if (!fromValue) return;
+
+        const fromDate = new Date(fromValue + "T00:00:00");
+        const minToDate = addDays(fromDate, 1);
+        const minTo = dateToISO(minToDate);
+
+        els.dateTo.min = minTo;
+
+        if (!els.dateTo.value || els.dateTo.value <= fromValue) {
+          els.dateTo.value = minTo;
+        }
       }
 
       function updateChildAgeFields() {
+        if (numberOfChildren > 0) {
+          els.childSelects.style.display = "block";
+        } else {
+          els.childSelects.style.display = "none";
+        }
+
         childGroups.forEach(function (groupId, index) {
           const group = document.getElementById(groupId);
           if (!group) return;
@@ -706,21 +664,6 @@
             if (select) select.value = "0";
           }
         });
-
-        sendHeight();
-      }
-
-      function showChildSelects() {
-        if (numberOfChildren > 0) {
-          els.childSelects.style.display = "block";
-          updateChildAgeFields();
-          sendHeight();
-        }
-      }
-
-      function hideChildSelects() {
-        els.childSelects.style.display = "none";
-        sendHeight();
       }
 
       function setCounterValue(type, value) {
@@ -733,20 +676,17 @@
           numberOfChildren = Math.max(minChildren, Math.min(maxChildren, value));
           els.children.value = numberOfChildren;
           updateChildAgeFields();
-
-          if (numberOfChildren > 0) {
-            showChildSelects();
-          } else {
-            hideChildSelects();
-          }
         }
       }
 
       function changeValue(type, direction) {
         removeError();
 
-        const currentValue = type === "adults" ? numberOfAdults : numberOfChildren;
-        const newValue = direction === "add" ? currentValue + 1 : currentValue - 1;
+        const currentValue =
+          type === "adults" ? numberOfAdults : numberOfChildren;
+
+        const newValue =
+          direction === "add" ? currentValue + 1 : currentValue - 1;
 
         setCounterValue(type, newValue);
       }
@@ -765,19 +705,11 @@
         return false;
       }
 
-      function isEnglishSite() {
-        try {
-          return window.parent.location.href.indexOf("//en.") !== -1;
-        } catch (e) {
-          return false;
-        }
-      }
-
       function buildBookingPayload() {
         const params = new URLSearchParams();
 
-        params.append("dateFrom", formatDate(dateFrom));
-        params.append("dateTo", formatDate(dateTo));
+        params.append("dateFrom", els.dateFrom.value);
+        params.append("dateTo", els.dateTo.value);
         params.append("1_adultCount", String(numberOfAdults));
 
         if (numberOfChildren > 0) {
@@ -786,10 +718,6 @@
           params.append("1_child2", String(ageOfChildren.child2 || 0));
           params.append("1_child3", String(ageOfChildren.child3 || 0));
           params.append("1_child4", String(ageOfChildren.child4 || 0));
-        }
-
-        if (isEnglishSite()) {
-          params.append("lang", "en");
         }
 
         return params.toString();
@@ -802,17 +730,15 @@
 
       function sendForm() {
         removeError();
-        setDateFrom();
-        setDateTo();
+        updateDateLimits();
 
-        if (!dateFrom || !dateTo || !numberOfAdults) {
+        if (!els.dateFrom.value || !els.dateTo.value || !numberOfAdults) {
           setError(msgMissingDates);
           return;
         }
 
         if (hasMissingChildAge()) {
           setError(msgNoAgeOfChildren);
-          showChildSelects();
           return;
         }
 
@@ -825,8 +751,8 @@
           method: "POST",
           body: payload,
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          }
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
         })
           .then(function (response) {
             if (!response.ok) {
@@ -860,53 +786,47 @@
           })
           .finally(function () {
             setSubmitting(false);
-            hideChildSelects();
           });
       }
 
-      els.counterButtons.forEach(function (button) {
-        button.addEventListener("click", function () {
-          changeValue(
-            button.getAttribute("data-counter"),
-            button.getAttribute("data-direction")
-          );
+      function bindEvents() {
+        els.counterButtons.forEach(function (button) {
+          button.addEventListener("click", function () {
+            changeValue(
+              button.getAttribute("data-counter"),
+              button.getAttribute("data-direction")
+            );
+          });
         });
-      });
 
-      els.childAgeSelects.forEach(function (select) {
-        select.addEventListener("change", function () {
+        els.childAgeSelects.forEach(function (select) {
+          select.addEventListener("change", function () {
+            removeError();
+
+            const childNumber = select.getAttribute("data-child");
+            const childKey = "child" + childNumber;
+
+            ageOfChildren[childKey] = select.value;
+          });
+        });
+
+        els.dateFrom.addEventListener("change", function () {
           removeError();
-
-          const childNumber = select.getAttribute("data-child");
-          ageOfChildren["child" + childNumber] = select.value;
+          updateDateLimits();
         });
-      });
 
-      els.bookButton.addEventListener("click", sendForm);
+        els.dateTo.addEventListener("change", function () {
+          removeError();
+        });
 
-      els.dateFrom.addEventListener("keydown", function (event) {
-        event.preventDefault();
-      });
-
-      els.dateTo.addEventListener("keydown", function (event) {
-        event.preventDefault();
-      });
-
-      els.dateFrom.addEventListener("blur", setDateFrom);
-      els.dateTo.addEventListener("blur", setDateTo);
-
-      els.childrenCounter.addEventListener("mouseenter", showChildSelects);
-      els.childSelects.addEventListener("mouseenter", showChildSelects);
-
-      document.addEventListener("click", function (event) {
-        const clickedInsideWidget = widget.contains(event.target);
-
-        if (!clickedInsideWidget) {
-          hideChildSelects();
-        }
-      });
+        els.bookButton.addEventListener("click", function () {
+          sendForm();
+        });
+      }
 
       function init() {
+        setDefaultDates();
+
         els.adults.min = minAdults;
         els.adults.max = maxAdults;
         els.adults.value = numberOfAdults;
@@ -917,10 +837,8 @@
 
         els.bookButton.value = buttonDefaultText;
 
-        setDateFrom();
-        setDateTo();
         updateChildAgeFields();
-        sendHeight();
+        bindEvents();
       }
 
       init();
